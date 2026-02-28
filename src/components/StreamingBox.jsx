@@ -41,6 +41,13 @@ const [showPiracyWarning, setShowPiracyWarning] = useState(true);
       tv: (id, s, e) =>
         `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${s}&episode=${e}`,
     },
+    {
+      id: "111movies",
+      name: "Server 5",
+      movie: (id) => `https://111movies.net/movie/${id}`,
+      tv: (id, s, e) =>
+        `https://111movies.net/tv/${id}/${s}/${e}`,
+    },
   ];
 
   //  Get Active Server Source
@@ -213,14 +220,15 @@ const [showPiracyWarning, setShowPiracyWarning] = useState(true);
     )}
 
     {isPlaying && (
-      <iframe
-        src={getSrc()}
-        className="absolute inset-0 w-full h-full"
-        allowFullScreen
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-presentation"
-        referrerPolicy="no-referrer"
-      />
+      
+  <iframe
+    src={getSrc()}
+    className="absolute inset-0 w-full h-full"
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer"
+  />
+
     )}
 
   </div>
