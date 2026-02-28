@@ -6,7 +6,7 @@ export default function StreamingBox({
   season = 1,
   episode = 1,
 }) {
-  const [server, setServer] = useState("vidsrc");
+  const [server, setServer] = useState("AeonWatch");
   const [isPlaying, setIsPlaying] = useState(false);
   const [showWarning, setShowWarning] = useState(true);
 const [showPiracyWarning, setShowPiracyWarning] = useState(true);
@@ -35,11 +35,11 @@ const [showPiracyWarning, setShowPiracyWarning] = useState(true);
         `https://cinesrc.st/embed/tv/${id}?s=${s}&e=${e}`,
     },
     {
-      id: "autoembed",
+      id: "AeonWatch",
       name: "Server 4",
-      movie: (id) => `https://player.autoembed.cc/embed/movie/${id}`,
+      movie: (id) => `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}&poster=true`,
       tv: (id, s, e) =>
-        `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`,
+        `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${s}&episode=${e}`,
     },
   ];
 
