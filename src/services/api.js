@@ -17,18 +17,24 @@ export const attachLoadingSetter = (setter) => {
 
 // Request interceptor
 api.interceptors.request.use((config) => {
-  if (setGlobalLoading) setGlobalLoading(true);
+  if (!config.meta?.skipLoading && setGlobalLoading) {
+    setGlobalLoading(true);
+  }
   return config;
 });
 
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    if (setGlobalLoading) setGlobalLoading(false);
+    if (!response.config.meta?.skipLoading && setGlobalLoading) {
+      setGlobalLoading(false);
+    }
     return response;
   },
   (error) => {
-    if (setGlobalLoading) setGlobalLoading(false);
+    if (!error.config?.meta?.skipLoading && setGlobalLoading) {
+      setGlobalLoading(false);
+    }
     return Promise.reject(error);
   }
 );
@@ -42,9 +48,15 @@ export const getLatest = () => api.get("/latest");
 export const getTop100 = () => api.get("/top100");
 export const getTopTV = () => api.get("/tv/top100");
 
+export const aiSearch = (message) =>
+  api.post("/ai-search", { message }, {
+    meta: { skipLoading: true }
+  });
+
 export const searchMedia = (query, type) =>
   api.get("/search", {
     params: { query, type },
+    meta: { skipLoading: true }
   });
 
 export const fetchMovieDetails = (id) =>

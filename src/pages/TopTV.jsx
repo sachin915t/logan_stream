@@ -29,7 +29,7 @@ export default function TopTV() {
           Top 100 TV Shows
         </h1>
 
-        {loading && <p>Loading...</p>}
+        {loading && <p></p>}
 
         {!loading && (
           <div className="

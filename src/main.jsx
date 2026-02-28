@@ -6,11 +6,14 @@ import App from './App.jsx'
 import { FavoritesProvider } from "./context/FavoritesContext";
 
 
+
 createRoot(document.getElementById('root')).render(
-<FavoritesProvider>
+
+  <FavoritesProvider>
   <LoadingProvider>
     <App />
   </LoadingProvider>
 </FavoritesProvider>
+
 
 )

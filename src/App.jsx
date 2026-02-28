@@ -11,9 +11,10 @@ import { useLoading } from "./context/LoadingContext";
 import { attachLoadingSetter } from "./services/api";
 import TopTV from "./pages/TopTV";
 import Favorites from "./pages/Favorites";
-import ScrollToTopButton from "./components/ScrollToTopButton";
 import Anime from "./pages/Anime";
 import zoroIcon from "./assets/zoro.svg";
+import AIChat from "./components/AIChat";
+import FavoriteToast from "./components/FavoriteToast";
 // css
 import "./App.css";
 
@@ -89,10 +90,12 @@ function App() {
 
   //  ONLY MOUNT ROUTER IF UNLOCKED
   return (
-    <BrowserRouter>
-      <ScrollToTopButton />
-      <Navbar />
+    <BrowserRouter> 
+       
       <GlobalLoader />
+      <Navbar />
+      <AIChat />
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/top100" element={<Top100 />} />
@@ -103,6 +106,11 @@ function App() {
         <Route path="/movie/:id" element={<MovieDetails />} />
         <Route path="/tv/:id" element={<TVDetails />} />
       </Routes>
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999]">
+        <FavoriteToast />
+          </div>
+        
+
     </BrowserRouter>
   );
 }

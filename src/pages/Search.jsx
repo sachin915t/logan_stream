@@ -10,19 +10,23 @@ export default function Search() {
   const [searched, setSearched] = useState(false);
 
   const handleSearch = async () => {
-    if (!query.trim()) return;
+  if (!query.trim()) return;
 
-    try {
-      setLoading(true);
-      const res = await searchMedia(query, type);
-      setResults(res.data.results || []);
-      setSearched(true);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    setSearched(false);
+
+    setResults([]);  
+
+    const res = await searchMedia(query, type);
+    setResults(res.data.results || []);
+    setSearched(true);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="bg-[#1D232A] min-h-screen text-white py-10">
@@ -32,23 +36,23 @@ export default function Search() {
           Search
         </h1>
 
-        {/* DaisyUI Toggle */}
+        {/* Toggle */}
         <div className="tabs tabs-boxed mb-6">
-          <a
+          <button
             className={`tab ${type === "movie" ? "tab-active" : ""}`}
             onClick={() => setType("movie")}
           >
             Movies
-          </a>
-          <a
+          </button>
+          <button
             className={`tab ${type === "tv" ? "tab-active" : ""}`}
             onClick={() => setType("tv")}
           >
             TV Shows
-          </a>
+          </button>
         </div>
 
-        {/* Input */}
+        {/* Search Input */}
         <div className="flex gap-4 w-full max-w-xl">
           <input
             type="text"
@@ -66,33 +70,35 @@ export default function Search() {
           </button>
         </div>
 
-        {loading && (
-          <div className="mt-10">
-            <span className="loading loading-spinner loading-lg text-warning"></span>
-          </div>
-        )}
+        {/* Results Section */}
+        <div className="relative w-full mt-10">
 
-        {!loading && searched && results.length === 0 && (
-          <p className="mt-10 text-gray-400">
-            No results found.
-          </p>
-        )}
+          {/* Loading Overlay (keeps layout stable) */}
+          <div className="relative w-full mt-10 min-h-[300px]">
 
-        {!loading && results.length > 0 && (
-          <div className="
-          mt-5
-  grid
-  grid-cols-2
-  gap-3
-  sm:grid-cols-3
-  md:grid-cols-4
-  lg:grid-cols-5
-">
-            {results.map((item) => (
-             <MovieCard key={item.id} movie={item} type={type} />
-            ))}
-          </div>
-        )}
+  {loading && (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <span className="loading loading-spinner loading-lg text-warning"></span>
+    </div>
+  )}
+
+  {results.length > 0 && (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {results.map((item) => (
+        <MovieCard key={item.id} movie={item} type={type} />
+      ))}
+    </div>
+  )}
+
+  {!loading && searched && results.length === 0 && (
+    <p className="text-gray-400 text-center mt-6">
+      No results found.
+    </p>
+  )}
+
+</div>
+
+        </div>
 
       </div>
     </div>

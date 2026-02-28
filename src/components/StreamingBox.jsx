@@ -6,10 +6,10 @@ export default function StreamingBox({
   season = 1,
   episode = 1,
 }) {
-  const [server, setServer] = useState("cinesrc");
+  const [server, setServer] = useState("vidsrc");
   const [isPlaying, setIsPlaying] = useState(false);
   const [showWarning, setShowWarning] = useState(true);
-
+const [showPiracyWarning, setShowPiracyWarning] = useState(true);
   //  Dynamic Server Config
   const servers = [
     {
@@ -33,7 +33,14 @@ export default function StreamingBox({
       movie: (id) => `https://cinesrc.st/embed/movie/${id}`,
       tv: (id, s, e) =>
         `https://cinesrc.st/embed/tv/${id}?s=${s}&e=${e}`,
-    }
+    },
+    {
+      id: "autoembed",
+      name: "Server 4",
+      movie: (id) => `https://player.autoembed.cc/embed/movie/${id}`,
+      tv: (id, s, e) =>
+        `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`,
+    },
   ];
 
   //  Get Active Server Source
@@ -83,6 +90,40 @@ export default function StreamingBox({
         </div>
       )}
 
+      {showPiracyWarning && (
+  <div className="alert alert-error shadow-lg rounded-xl flex items-center justify-between mb-4">
+    
+    <div className="flex items-center gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M12 9v2m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z"
+        />
+      </svg>
+
+      <span className="text-sm sm:text-base">
+        This project does <span className="font-semibold">not support piracy</span>.
+        It is a <span className="font-semibold">personal hobby and learning project</span>.
+        Please use official platforms for streaming.
+      </span>
+    </div>
+
+    <button
+      onClick={() => setShowPiracyWarning(false)}
+      className="btn btn-sm btn-circle btn-ghost"
+    >
+      ✕
+    </button>
+  </div>
+)}
+
       {/*  Streaming Section */}
       <div className="mt-6 -mx-3 sm:mx-0">
   <div
@@ -130,60 +171,60 @@ export default function StreamingBox({
     </div>
 
     {/* Responsive Player */}
-    <div
-      className={`
-        relative
-        w-full
-        rounded-2xl
-        overflow-hidden
-        border border-amber-400/20
-        bg-black
-        transition-all duration-500
-        ${
-          isPlaying
-            ? "ring-2 ring-amber-400/40 shadow-amber-400/30 shadow-xl"
-            : ""
-        }
-      `}
-      style={{
-        minHeight: "220px",
-      }}
-    >
-      {/* Mobile Taller Ratio */}
-      <div className="w-full h-[260px] sm:h-[380px] md:h-[500px]">
-        {!isPlaying && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md">
-            <button
-              onClick={() => setIsPlaying(true)}
-              className="
-                bg-amber-400 text-black
-                px-6 sm:px-8
-                py-2 sm:py-3
-                text-sm sm:text-base
-                rounded-full
-                font-semibold
-                shadow-lg
-                hover:scale-105
-                hover:bg-amber-500
-                transition-all duration-300
-              "
-            >
-               Play {type === "tv" ? `S${season} E${episode}` : "Movie"}
-            </button>
-          </div>
-        )}
+<div
+  className={`
+    relative
+    w-full
+    rounded-2xl
+    overflow-hidden
+    border border-amber-400/20
+    bg-black
+    transition-all duration-500
+    ${
+      isPlaying
+        ? "ring-2 ring-amber-400/40 shadow-amber-400/30 shadow-xl"
+        : ""
+    }
+  `}
+>
+  {/* Aspect Ratio Container */}
+  <div className="relative w-full aspect-video">
 
-        {isPlaying && (
-          <iframe
-            src={getSrc()}
-            className="w-full h-full"
-            allowFullScreen
-            sandbox="allow-scripts allow-same-origin allow-presentation"
-            referrerPolicy="no-referrer"
-          />
-        )}
+    {!isPlaying && (
+      <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md">
+        <button
+          onClick={() => setIsPlaying(true)}
+          className="
+            bg-amber-400 text-black
+            px-6 sm:px-8
+            py-2 sm:py-3
+            text-sm sm:text-base
+            rounded-full
+            font-semibold
+            shadow-lg
+            hover:scale-105
+            hover:bg-amber-500
+            transition-all duration-300
+          "
+        >
+          Play {type === "tv" ? `S${season} E${episode}` : "Movie"}
+        </button>
       </div>
-    </div>
+    )}
+
+    {isPlaying && (
+      <iframe
+        src={getSrc()}
+        className="absolute inset-0 w-full h-full"
+        allowFullScreen
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-presentation"
+        referrerPolicy="no-referrer"
+      />
+    )}
+
+  </div>
+</div>
   </div>
 </div>
     </>

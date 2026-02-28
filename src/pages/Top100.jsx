@@ -28,7 +28,7 @@ export default function Top100() {
         </h1>
 
         {loading && (
-          <p className="text-gray-400 text-center">Loading movies...</p>
+          <p className="text-gray-400 text-center"></p>
         )}
 
         {!loading && (
