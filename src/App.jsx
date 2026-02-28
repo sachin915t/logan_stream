@@ -11,6 +11,8 @@ import { useLoading } from "./context/LoadingContext";
 import { attachLoadingSetter } from "./services/api";
 import TopTV from "./pages/TopTV";
 import Favorites from "./pages/Favorites";
+import ScrollToTopButton from "./components/ScrollToTopButton";
+import Anime from "./pages/Anime";
 
 import './App.css'
 
@@ -22,6 +24,7 @@ useEffect(() => {
 }, [setLoading]);
   return (
     <BrowserRouter>
+      <ScrollToTopButton />
       <Navbar />
       <GlobalLoader />
       <Routes>
@@ -30,6 +33,7 @@ useEffect(() => {
         <Route path="/tv/top100" element={<TopTV />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/anime" element={<Anime />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
         <Route path="/tv/:id" element={<TVDetails />} />
       </Routes>

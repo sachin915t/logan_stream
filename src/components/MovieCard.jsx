@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
+import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
 export default function MovieCard({ movie, type }) {
   if (!movie) return null;
@@ -32,8 +34,10 @@ export default function MovieCard({ movie, type }) {
     sm:hover:scale-[1.03]
     sm:hover:shadow-2xl
   "
->
-          <button
+        >
+          
+          {/* fav button sec */}
+        <button
   onClick={(e) => {
     e.preventDefault();
     toggleFavorite({
@@ -48,15 +52,26 @@ export default function MovieCard({ movie, type }) {
     absolute top-2 left-2 z-20
     opacity-100 sm:opacity-0
     sm:group-hover:opacity-100
-    transition-all duration-300
+    transition-all duration-300 ease-out
     backdrop-blur-md
     cursor-pointer
-    bg-black/50
+    bg-black/40
     p-2 rounded-full
     hover:scale-110
+    active:scale-90
   "
 >
-  {favorite ? "❤️" : "🤍"}
+  <span
+    className={`
+      text-xl transition-all duration-300
+      ${favorite 
+        ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]" 
+        : "text-white"
+      }
+    `}
+  >
+    {favorite ? <FaHeart /> : <FaRegHeart />}
+  </span>
 </button>
         {/* Poster */}
         <div className="relative ">
