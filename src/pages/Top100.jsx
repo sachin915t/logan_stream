@@ -23,7 +23,7 @@ export default function Top100() {
     <div className="bg-[#1D232A] min-h-screen text-white py-10">
       <div className="max-w-7xl mx-auto px-4">
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-8">
+        <h1 className="text-3xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-8">
           Top 100 Movies
         </h1>
 
