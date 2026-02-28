@@ -6,6 +6,8 @@ import {
 } from "../services/api";
 import StreamingBox from "../components/StreamingBox";
 import MovieCard from "../components/MovieCard";
+import { useFavorites } from "../context/FavoritesContext";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -14,6 +16,7 @@ export default function MovieDetails() {
   const [credits, setCredits] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [loadingRecs, setLoadingRecs] = useState(true);
+  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,6 +39,8 @@ export default function MovieDetails() {
         Loading...
       </div>
     );
+  const { toggleFavorite, isFavorite } = useFavorites();
+const favorite = isFavorite(details?.id);
 
   const cast = credits?.cast?.slice(0, 8) || [];
   const director =
@@ -50,7 +55,7 @@ export default function MovieDetails() {
           <img
             src={`https://image.tmdb.org/t/p/original${details.backdrop_path}`}
             alt="Backdrop"
-            className="absolute top-0 left-0 w-full h-screen object-cover brightness-50"
+            className="absolute top-0 left-0 w-full h-screen object-cover blur-sm brightness-50"
           />
         </div>
       )}
@@ -64,18 +69,56 @@ export default function MovieDetails() {
         {/* Top Section */}
         <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
 
+          <div className="hover-3d">
+            
+            
           {/* Poster */}
-          <div className="flex justify-center md:block">
-            <img
-              src={
-                details.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${details.poster_path}`
-                  : "https://via.placeholder.com/500x750?text=No+Image"
-              }
-              alt={details.title}
-              className="w-44 sm:w-56 md:w-72 rounded-2xl shadow-2xl"
-            />
-          </div>
+            <div className="relative group">
+  <img
+    src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
+    alt={details.name}
+    className="w-56 md:w-72 rounded-2xl shadow-2xl transition"
+              />
+              </div>
+              
+
+  {/* ❤️ Favorite Button (Same Style as MovieCard) */}
+  <button
+    onClick={() =>
+      toggleFavorite({
+        id: details.id,
+        title: details.name || details.title,
+        poster_path: details.poster_path,
+        vote_average: details.vote_average,
+        type: "tv", // or detect dynamically if needed
+      })
+    }
+    className="
+      absolute top-2 left-2 z-20
+      backdrop-blur-md
+      cursor-pointer
+      bg-black/40
+      p-2 rounded-full
+      hover:scale-110
+      active:scale-90
+      transition-all duration-300
+    "
+  >
+    <span
+      className={`
+        text-xl transition-all duration-300
+        ${
+          favorite
+            ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
+            : "text-white"
+        }
+      `}
+    >
+      {favorite ? <FaHeart /> : <FaRegHeart />}
+    </span>
+  </button>
+</div>
+            
 
           {/* Info */}
           <div className="flex-1 text-center md:text-left">

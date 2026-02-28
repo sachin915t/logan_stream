@@ -9,12 +9,12 @@ export default function TopTV() {
   useEffect(() => {
     getTopTV()
       .then((res) => {
-        console.log("TV DATA:", res.data);
+        // console.log("TV DATA:", res.data);
         setShows(res.data);
         
       })
       .catch((err) => {
-        console.error("Top TV error:", err);
+        // console.error("Top TV error:", err);
       })
       .finally(() => {
         setLoading(false);

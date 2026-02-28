@@ -7,6 +7,8 @@ import {
 } from "../services/api";
 import MovieCard from "../components/MovieCard";
 import { Link } from "react-router-dom";
+import { useFavorites } from "../context/FavoritesContext";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const movieGenres = [
   { id: 27, name: "Horror" },
@@ -21,6 +23,8 @@ const tvGenres = [
   { id: 35, name: "Comedy" },
   { id: 9648, name: "Mystery" },
 ];
+
+
 
 export default function Home() {
   const [latestMovies, setLatestMovies] = useState([]);
@@ -61,12 +65,11 @@ export default function Home() {
         <SectionTitle title="Featured Movies" />
         <ResponsiveGrid>
           {latestMovies.slice(0, 4).map(movie => (
+            <div className="hover-3d">
             <Link key={movie.id} to={`/movie/${movie.id}`}>
-              <FeatureCard
-                image={movie.poster_path}
-                title={movie.title}
-              />
-            </Link>
+             <MovieCard movie={movie} variant="featured" />
+              </Link>
+              </div>
           ))}
         </ResponsiveGrid>
 
@@ -95,12 +98,11 @@ export default function Home() {
         <SectionTitle title="Featured TV Shows" />
         <ResponsiveGrid>
           {latestTV.slice(0, 4).map(show => (
+            <div className="hover-3d">
             <Link key={show.id} to={`/tv/${show.id}`}>
-              <FeatureCard
-                image={show.poster_path}
-                title={show.name}
-              />
-            </Link>
+              <MovieCard movie={{ ...show, title: show.name }} type="tv" variant="featured" />
+              </Link>
+              </div>
           ))}
         </ResponsiveGrid>
 
@@ -187,15 +189,51 @@ function AutoGrid({ children }) {
   );
 }
 
-function FeatureCard({ image, title }) {
+function FeatureCard({ image, title, id, type = "movie", vote_average }) {
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorite = isFavorite(id);
+
   return (
-    <div className="card bg-base-200 shadow-xl hover:scale-105 transition">
+    <div className="relative group card bg-base-200 shadow-xl hover:scale-105 transition">
+
+      {/* ❤️ Favorite Button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault(); // stop Link navigation
+          toggleFavorite({
+            id,
+            title,
+            poster_path: image,
+            vote_average,
+            type,
+          });
+        }}
+        className="
+          absolute top-2 left-2 z-20
+          bg-black/40 backdrop-blur-md
+          p-2 rounded-full
+          hover:scale-110 active:scale-90
+          transition-all duration-300
+        "
+      >
+        <span
+          className={`text-lg ${
+            favorite
+              ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
+              : "text-white"
+          }`}
+        >
+          {favorite ? <FaHeart /> : <FaRegHeart />}
+        </span>
+      </button>
+
       <figure>
         <img
           src={`https://image.tmdb.org/t/p/w500${image}`}
           alt={title}
         />
       </figure>
+
       <div className="card-body p-3">
         <h2 className="card-title text-sm">{title}</h2>
       </div>

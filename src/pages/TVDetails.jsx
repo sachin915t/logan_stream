@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { fetchTVDetails, fetchTVRecommendations } from "../services/api";
 import StreamingBox from "../components/StreamingBox";
 import MovieCard from "../components/MovieCard";
+import { useFavorites } from "../context/FavoritesContext";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function TVDetails() {
   const { id } = useParams();
@@ -18,9 +20,10 @@ export default function TVDetails() {
       setDetails(res.data.details);
       setCredits(res.data.credits);
     });
+
     fetchTVRecommendations(id).then((res) => {
-  setRecommendations(res.data);
-});
+      setRecommendations(res.data);
+    });
   }, [id]);
 
   if (!details)
@@ -29,43 +32,84 @@ export default function TVDetails() {
         Loading...
       </div>
     );
+  
+  const { toggleFavorite, isFavorite } = useFavorites();
+const favorite = isFavorite(details.id);
 
   const cast = credits?.cast?.slice(0, 8) || [];
-  const seasons = details.number_of_seasons;
+  const seasonsData = details.seasons || [];
+
+  const currentSeason = seasonsData.find(
+    (s) => s.season_number === season
+  );
+
+  const totalEpisodes = currentSeason?.episode_count || 1;
 
   return (
     <div className="relative min-h-screen w-screen text-white overflow-x-hidden">
 
-      {/* 🔥 FULL BACKDROP */}
+      {/* BACKDROP */}
       <div className="fixed inset-0 -z-20">
         <img
           src={`https://image.tmdb.org/t/p/original${details.backdrop_path}`}
           alt="Backdrop"
-          className="w-full h-full object-cover blur-2xl scale-110 brightness-50"
+          className="w-full h-full object-cover blur-sm scale-110 brightness-50"
         />
       </div>
 
-      {/* DARK OVERLAY */}
       <div className="fixed inset-0 -z-10 bg-black/70"></div>
 
-      {/* CONTENT */}
       <div className="relative px-6 md:px-12 py-20 max-w-7xl mx-auto">
 
         {/* TOP SECTION */}
         <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
 
-          {/* Poster */}
           <div className="hover-3d">
-          <div>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
-              alt={details.name}
-              className="w-56 md:w-72 rounded-2xl shadow-2xl hover:scale-105 transition"
-            />
-            </div>
-            </div>
+          <div className="relative group">
+  <img
+    src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
+    alt={details.name}
+    className="w-56 md:w-72 rounded-2xl shadow-2xl hover:scale-105 transition"
+              />
+              </div>
 
-          {/* Info */}
+  {/* ❤️ Favorite Button */}
+  <button
+    onClick={() =>
+      toggleFavorite({
+        id: details.id,
+        title: details.name,
+        poster_path: details.poster_path,
+        vote_average: details.vote_average,
+        type: "tv",
+      })
+    }
+    className="
+      absolute top-2 left-2 z-20
+      backdrop-blur-md
+      cursor-pointer
+      bg-black/40
+      p-2 rounded-full
+      hover:scale-110
+      active:scale-90
+      transition-all duration-300
+    "
+  >
+    <span
+      className={`
+        text-xl transition-all duration-300
+        ${
+          favorite
+            ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
+            : "text-white"
+        }
+      `}
+    >
+      {favorite ? <FaHeart /> : <FaRegHeart />}
+    </span>
+  </button>
+</div>
+
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-amber-400">
               {details.name}
@@ -80,9 +124,6 @@ export default function TVDetails() {
               <p>📅 First Air: {details.first_air_date}</p>
               <p>🎞 Seasons: {details.number_of_seasons}</p>
             </div>
-
-           
-
           </div>
         </div>
 
@@ -104,57 +145,62 @@ export default function TVDetails() {
           </div>
         </div>
 
-         {/* SEASON & EPISODE SELECTOR */}
-<div className="mt-8 flex flex-wrap gap-6 justify-center md:justify-start items-end">
+        {/* SEASON & EPISODE SELECTOR */}
+        <div className="mt-12 flex flex-wrap gap-6 items-end">
 
-  {/* Season Select */}
-  <div className="form-control w-40">
-    <label className="label">
-      <span className="label-text text-amber-400 font-semibold">
-        Season
-      </span>
-    </label>
+          {/* Season Select */}
+          <div className="form-control w-48">
+            <label className="label">
+              <span className="label-text text-amber-400 font-semibold">
+                Season
+              </span>
+            </label>
 
-    <select
-      className="select select-bordered bg-black-200/60 backdrop-blur-md border-amber-400/30 focus:border-amber-400 focus:outline-none"
-      value={season}
-      onChange={(e) => {
-        setSeason(Number(e.target.value));
-        setEpisode(1);
-      }}
-    >
-      {[...Array(seasons)].map((_, i) => (
-        <option key={i + 1} value={i + 1}>
-          Season {i + 1}
-        </option>
-      ))}
-    </select>
-  </div>
+            <select
+              className="select select-bordered bg-base border-amber-400/30 focus:border-amber-400"
+              value={season}
+              onChange={(e) => {
+                const newSeason = Number(e.target.value);
+                setSeason(newSeason);
+                setEpisode(1);
+              }}
+            >
+              {seasonsData
+                .filter((s) => s.season_number !== 0)
+                .map((s) => (
+                  <option key={s.id} value={s.season_number}>
+                    Season {s.season_number}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-  {/* Episode Input */}
-  <div className="form-control w-40">
-    <label className="label">
-      <span className="label-text text-amber-400 font-semibold">
-        Episode
-      </span>
-    </label>
+          {/* Episode Select */}
+          <div className="form-control w-48">
+            <label className="label">
+              <span className="label-text text-amber-400 font-semibold">
+                Episode
+              </span>
+            </label>
 
-    <input
-      type="number"
-      min="1"
-      value={episode}
-      onChange={(e) => setEpisode(Number(e.target.value))}
-      className="input input-bordered bg-base-200/60 backdrop-blur-md border-amber-400/30 focus:border-amber-400 focus:outline-none"
-      placeholder="Episode No"
-    />
-  </div>
+            <select
+              className="select select-bordered bg-base border-amber-400/30 focus:border-amber-400"
+              value={episode}
+              onChange={(e) => setEpisode(Number(e.target.value))}
+            >
+              {Array.from({ length: totalEpisodes }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  Episode {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
 
-  {/* Live Badge */}
-  <div className="badge badge-warning badge-outline h-10 px-4 text-sm">
-    S{season} • E{episode}
-  </div>
-
-</div>
+          {/* Info Badge */}
+          <div className="badge badge-warning badge-outline h-10 px-4 text-sm">
+            S{season} • E{episode} • {totalEpisodes} Episodes
+          </div>
+        </div>
 
         {/* STREAMING */}
         <div className="mt-20">
@@ -166,34 +212,24 @@ export default function TVDetails() {
           />
         </div>
 
-        {/* Related TV Shows */}
-{recommendations.length > 0 && (
-  <div className="mt-20">
-    <h2 className="text-2xl font-semibold text-amber-400 mb-6">
-      More Like This
-    </h2>
+        {/* RECOMMENDATIONS */}
+        {recommendations.length > 0 && (
+          <div className="mt-20">
+            <h2 className="text-2xl font-semibold text-amber-400 mb-6">
+              More Like This
+            </h2>
 
-    <div className="
-      grid
-      grid-cols-2
-      gap-4
-      sm:grid-cols-3
-      md:grid-cols-4
-      lg:grid-cols-5
-    ">
-      {recommendations.map((show) => (
-        <MovieCard
-          key={show.id}
-          movie={{ ...show, title: show.name }}
-          type="tv"
-        />
-      ))}
-    </div>
-  </div>
-)}
-
-
-
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {recommendations.map((show) => (
+                <MovieCard
+                  key={show.id}
+                  movie={{ ...show, title: show.name }}
+                  type="tv"
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

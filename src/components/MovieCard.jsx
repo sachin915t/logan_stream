@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
-import { FaHeart } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
-export default function MovieCard({ movie, type }) {
+export default function MovieCard({ movie, type, variant = "normal" }) {
   if (!movie) return null;
 
   const mediaType =
     type ||
     movie.media_type ||
     (movie.title ? "movie" : "tv");
+
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorite = isFavorite(movie.id);
-  
-  
 
   return (
     <Link
@@ -22,59 +20,21 @@ export default function MovieCard({ movie, type }) {
     >
       <div className="hover-3d">
       <div
-  className="
-    relative group
-    bg-white/5
-    backdrop-blur-xl
-    border border-white/10
-    rounded-2xl
-    overflow-hidden
-    shadow-md
-    transition-all duration-300
-    sm:hover:scale-[1.03]
-    sm:hover:shadow-2xl
-  "
-        >
-          
-          {/* fav button sec */}
-        <button
-  onClick={(e) => {
-    e.preventDefault();
-    toggleFavorite({
-      id: movie.id,
-      title: movie.title || movie.name,
-      poster_path: movie.poster_path,
-      vote_average: movie.vote_average,
-      type: mediaType
-    });
-  }}
-  className="
-    absolute top-2 left-2 z-20
-    opacity-100 sm:opacity-0
-    sm:group-hover:opacity-100
-    transition-all duration-300 ease-out
-    backdrop-blur-md
-    cursor-pointer
-    bg-black/40
-    p-2 rounded-full
-    hover:scale-110
-    active:scale-90
-  "
->
-  <span
-    className={`
-      text-xl transition-all duration-300
-      ${favorite 
-        ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]" 
-        : "text-white"
-      }
-    `}
-  >
-    {favorite ? <FaHeart /> : <FaRegHeart />}
-  </span>
-</button>
-        {/* Poster */}
-        <div className="relative ">
+        className={`
+          bg-white/5
+          backdrop-blur-xl
+          border border-white/10
+          rounded-2xl
+          overflow-hidden
+          shadow-md
+          transition-all duration-300
+          hover:shadow-xl
+          hover:scale-[1.02]
+          ${variant === "featured" ? "md:scale-100" : ""}
+        `}
+      >
+        {/* Image Section */}
+        <div className="relative">
           <img
             src={
               movie.poster_path
@@ -82,31 +42,57 @@ export default function MovieCard({ movie, type }) {
                 : "https://via.placeholder.com/500x750?text=No+Image"
             }
             alt={movie.title || movie.name}
-            className="
-              w-full
-              aspect-[2/3]
-              object-cover
-            "
+            className="w-full aspect-[2/3] object-cover"
             loading="lazy"
           />
 
-          {/* Rating Badge */}
-          <div
+          {/* ❤️ Favorite Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              toggleFavorite({
+                id: movie.id,
+                title: movie.title || movie.name,
+                poster_path: movie.poster_path,
+                vote_average: movie.vote_average,
+                type: mediaType,
+              });
+            }}
             className="
-              absolute top-1.5 right-1.5
-              bg-black/70
-              text-[10px] sm:text-xs
-              px-2 py-0.5
-              rounded
+              absolute top-2 left-2 z-20
+              bg-black/40 backdrop-blur-md
+              p-2 rounded-full
+              hover:scale-110 active:scale-90
+              transition-all duration-300
             "
           >
+            <span
+              className={`text-lg ${
+                favorite
+                  ? "text-red-500 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
+                  : "text-white"
+              }`}
+            >
+              {favorite ? <FaHeart /> : <FaRegHeart />}
+            </span>
+          </button>
+
+          {/* Rating */}
+          <div className="absolute top-2 right-2 bg-black/70 text-xs px-2 py-0.5 rounded">
             ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
           </div>
         </div>
 
-        {/* Title */}
-        <div className="p-2 sm:p-3">
-          <h2 className="text-xs sm:text-sm font-semibold line-clamp-2">
+        {/* Title Neeche */}
+        <div className="p-3">
+          <h2
+            className={`
+              font-semibold line-clamp-2 leading-snug
+              ${variant === "featured"
+                ? "text-base"
+                : "text-sm"}
+            `}
+          >
             {movie.title || movie.name}
           </h2>
         </div>
