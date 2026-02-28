@@ -1,77 +1,93 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { FaHome, FaSearch, FaHeart, FaFilm, FaTv } from "react-icons/fa";
 
 export default function Navbar() {
-  return (<>
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
 
-    <div className="sticky top-4 z-50 flex justify-center px-2">
+  return (
+    <>
+      {/* TOP NAVBAR */}
+      <div className="relative md:sticky md:top-4 z-50 flex justify-center px-2 mt-4 md:mt-0">
   <div className="
-    w-full 
-    max-w-6xl 
+    w-auto
     bg-white/5 
     backdrop-blur-xl 
     border border-white/10 
     shadow-lg 
-    rounded-2xl 
-    px-4 py-3 
+    rounded-xl 
+    px-6 py-2 
     flex 
-    flex-col 
-    md:flex-row 
-    md:justify-between 
+    justify-center md:justify-between 
     items-center 
     text-gray-200
   ">
-    
     <Link to="/" className="flex items-center">
       <h1 className="text-amber-400 font-bold text-xl tracking-wide">
-        LOGAN!
+        LOGAN! 
       </h1>
     </Link>
 
-    <div className="
-  flex 
-  flex-wrap 
-  justify-center 
-  gap-4 
-  md:gap-8 
-  text-sm 
-  font-medium 
-  mt-3 
-  md:mt-0
-">
-      <Link
-        to="/"
-        className="hover:text-amber-400 transition duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-amber-400 after:transition-all hover:after:w-full"
-      >
-        Home
-      </Link>
-
-      <Link
-        to="/top100"
-        className="hover:text-amber-400 transition duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-amber-400 after:transition-all hover:after:w-full"
-      >
-        Top Movies
-          </Link>
-          
-          <Link
-        to="/tv/top100"
-        className="hover:text-amber-400 transition duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-amber-400 after:transition-all hover:after:w-full"
-      >
-        Top TV
-      </Link>
-
-      <Link
-        to="/search"
-        className="hover:text-amber-400 transition duration-300 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-amber-400 after:transition-all hover:after:w-full"
-      >
-        Search
-      </Link>
+    {/* Desktop Links */}
+    <div className="hidden md:flex gap-8 text-sm font-medium ml-10">
+      <Link to="/">Home</Link>
+      <Link to="/top100">Top Movies</Link>
+      <Link to="/tv/top100">Top TV</Link>
+      <Link to="/favorites">Favorites</Link>
+      <Link to="/search">Search</Link>
     </div>
-
   </div>
 </div>
 
-   
+      {/* MOBILE BOTTOM ICON NAV */}
+      <div className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl py-3 px-6 flex justify-between items-center z-50 text-gray-300">
 
+        <Link
+          to="/"
+          className={`transition-all duration-300 active:scale-95 ${
+            isActive("/") ? "text-amber-400 scale-110" : ""
+          }`}
+        >
+          <FaHome size={22} />
+        </Link>
+
+        <Link
+          to="/top100"
+          className={`transition-all duration-300 active:scale-95 ${
+            isActive("/top100") ? "text-amber-400 scale-110" : ""
+          }`}
+        >
+          <FaFilm size={22} />
+        </Link>
+
+        <Link
+          to="/tv/top100"
+          className={`transition-all duration-300 active:scale-95 ${
+            isActive("/tv/top100") ? "text-amber-400 scale-110" : ""
+          }`}
+        >
+          <FaTv size={22} />
+        </Link>
+
+        <Link
+          to="/favorites"
+          className={`transition-all duration-300 active:scale-95 ${
+            isActive("/favorites") ? "text-amber-400 scale-110" : ""
+          }`}
+        >
+          <FaHeart size={22} />
+        </Link>
+
+        <Link
+          to="/search"
+          className={`transition-all duration-300 active:scale-95 ${
+            isActive("/search") ? "text-amber-400 scale-110" : ""
+          }`}
+        >
+          <FaSearch size={22} />
+        </Link>
+
+      </div>
     </>
   );
 }

@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchTVDetails } from "../services/api";
+import { fetchTVDetails, fetchTVRecommendations } from "../services/api";
 import StreamingBox from "../components/StreamingBox";
+import MovieCard from "../components/MovieCard";
 
 export default function TVDetails() {
   const { id } = useParams();
@@ -10,12 +11,16 @@ export default function TVDetails() {
   const [credits, setCredits] = useState(null);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
     fetchTVDetails(id).then((res) => {
       setDetails(res.data.details);
       setCredits(res.data.credits);
     });
+    fetchTVRecommendations(id).then((res) => {
+  setRecommendations(res.data);
+});
   }, [id]);
 
   if (!details)
@@ -160,6 +165,34 @@ export default function TVDetails() {
             episode={episode}
           />
         </div>
+
+        {/* Related TV Shows */}
+{recommendations.length > 0 && (
+  <div className="mt-20">
+    <h2 className="text-2xl font-semibold text-amber-400 mb-6">
+      More Like This
+    </h2>
+
+    <div className="
+      grid
+      grid-cols-2
+      gap-4
+      sm:grid-cols-3
+      md:grid-cols-4
+      lg:grid-cols-5
+    ">
+      {recommendations.map((show) => (
+        <MovieCard
+          key={show.id}
+          movie={{ ...show, title: show.name }}
+          type="tv"
+        />
+      ))}
+    </div>
+  </div>
+)}
+
+
 
       </div>
     </div>

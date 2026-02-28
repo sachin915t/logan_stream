@@ -62,3 +62,10 @@ export const getTVByGenre = (genreId) =>
 export const fetchTVDetails = (id) =>
     api.get(`/tv/${id}`);
 
+// movie recommendations
+export const fetchRecommendations = (id) =>
+  api.get(`/movie/${id}/recommendations`);
+
+//tv recommendations
+export const fetchTVRecommendations = (id) =>
+  api.get(`/tv/${id}/recommendations`);

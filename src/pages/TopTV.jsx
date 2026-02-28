@@ -32,7 +32,14 @@ export default function TopTV() {
         {loading && <p>Loading...</p>}
 
         {!loading && (
-          <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(170px,1fr))]">
+          <div className="
+  grid
+  grid-cols-2
+  gap-3
+  sm:grid-cols-3
+  md:grid-cols-4
+  lg:grid-cols-5
+">
             {shows.map((show) => (
               <MovieCard
                 key={show.id}

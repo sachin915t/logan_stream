@@ -79,7 +79,15 @@ export default function Search() {
         )}
 
         {!loading && results.length > 0 && (
-          <div className="grid gap-6 mt-12 w-full grid-cols-[repeat(auto-fit,minmax(170px,1fr))]">
+          <div className="
+          mt-5
+  grid
+  grid-cols-2
+  gap-3
+  sm:grid-cols-3
+  md:grid-cols-4
+  lg:grid-cols-5
+">
             {results.map((item) => (
              <MovieCard key={item.id} movie={item} type={type} />
             ))}

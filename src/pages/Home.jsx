@@ -77,9 +77,18 @@ export default function Home() {
           onSelect={setSelectedMovieGenre}
         />
         <AutoGrid>
+          <div className="
+  grid
+  grid-cols-2
+  gap-3
+  sm:grid-cols-3
+  md:grid-cols-4
+  lg:grid-cols-5
+">
           {movieGenreData.map(movie => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
+            </div>
         </AutoGrid>
 
         {/* 📺 FEATURED TV */}
@@ -102,6 +111,14 @@ export default function Home() {
           onSelect={setSelectedTVGenre}
         />
         <AutoGrid>
+          <div className="
+  grid
+  grid-cols-2
+  gap-3
+  sm:grid-cols-3
+  md:grid-cols-4
+  lg:grid-cols-5
+">
           {tvGenreData.map(show => (
             <MovieCard
               key={show.id}
@@ -112,6 +129,7 @@ export default function Home() {
               type="tv"
             />
           ))}
+            </div>
         </AutoGrid>
 
       </div>

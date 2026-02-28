@@ -10,6 +10,7 @@ import GlobalLoader from "./components/GlobalLoader";
 import { useLoading } from "./context/LoadingContext";
 import { attachLoadingSetter } from "./services/api";
 import TopTV from "./pages/TopTV";
+import Favorites from "./pages/Favorites";
 
 import './App.css'
 
@@ -18,7 +19,7 @@ function App() {
 
 useEffect(() => {
   attachLoadingSetter(setLoading);
-}, []);
+}, [setLoading]);
   return (
     <BrowserRouter>
       <Navbar />
@@ -27,6 +28,7 @@ useEffect(() => {
         <Route path="/" element={<Home />} />
         <Route path="/top100" element={<Top100 />} />
         <Route path="/tv/top100" element={<TopTV />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/search" element={<Search />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
         <Route path="/tv/:id" element={<TVDetails />} />
