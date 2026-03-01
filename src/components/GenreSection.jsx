@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import MovieCard from "./MovieCard";
+import { FaRegHandPointUp } from "react-icons/fa";
 
 export default function GenreSection({
   title,
@@ -55,10 +56,11 @@ export default function GenreSection({
 
       {/* No genre selected */}
       {!selectedGenre && (
-        <p className="text-gray-500 text-center mt-10">
-          👆 Select a genre to browse
-        </p>
-      )}
+  <div className="flex flex-col items-center justify-center mt-10 text-gray-500">
+    <FaRegHandPointUp className="text-xl mb-2 animate-bounce" />
+    <p>Select a genre to browse</p>
+  </div>
+)}
 
       {/* Loading */}
       {isLoading && selectedGenre && (

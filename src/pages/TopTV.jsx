@@ -54,7 +54,7 @@ export default function TopTV() {
 
         {isLoading && (
           <div className="flex justify-center mt-20">
-            <span className="loading loading-spinner loading-lg text-warning"></span>
+            
           </div>
         )}
 

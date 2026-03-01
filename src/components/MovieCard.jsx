@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
+
 export default function MovieCard({ movie, type, variant = "normal" }) {
   if (!movie) return null;
+  const [imgError, setImgError] = useState(false);
 
   const mediaType =
     type ||
@@ -35,16 +38,21 @@ export default function MovieCard({ movie, type, variant = "normal" }) {
       >
         {/* Image Section */}
         <div className="relative">
-          <img
-            src={
-              movie.poster_path
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : "https://via.placeholder.com/500x750?text=No+Image"
-            }
-            alt={movie.title || movie.name}
-            className="w-full aspect-[2/3] object-cover"
-            loading="lazy"
-          />
+          {!imgError && movie.poster_path ? (
+    <img
+      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+      alt={movie.title || movie.name}
+      className="w-full h-full object-cover"
+      loading="lazy"
+      onError={() => setImgError(true)}
+    />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-center p-4">
+      <p className="text-sm font-semibold text-amber-400">
+        {movie.title || movie.name}
+      </p>
+    </div>
+  )}
 
           {/* ❤️ Favorite Button */}
           <button
@@ -99,5 +107,17 @@ export default function MovieCard({ movie, type, variant = "normal" }) {
         </div>
         </div>
     </Link>
+  );
+}
+
+function MovieCardSkeleton() {
+  return (
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden animate-pulse">
+      <div className="w-full aspect-[2/3] bg-gray-700/40" />
+      <div className="p-3">
+        <div className="h-4 bg-gray-700/40 rounded w-3/4 mb-2" />
+        <div className="h-4 bg-gray-700/40 rounded w-1/2" />
+      </div>
+    </div>
   );
 }

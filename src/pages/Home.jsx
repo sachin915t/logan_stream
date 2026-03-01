@@ -112,7 +112,8 @@ const FEATURED_IDS = [
   <div className="max-w-7xl mx-auto px-6 py-10">
 
     {isLoading ? (
-      <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="flex justify-center items-center min-h-[60vh]">
+            
       </div>
     ) : (
       <>

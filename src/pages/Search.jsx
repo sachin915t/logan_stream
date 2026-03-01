@@ -5,7 +5,8 @@ import GenreSection from "../components/GenreSection";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { MdOutlineFilterAlt, MdOutlinePublic } from "react-icons/md";
 import { BiReset, BiSort } from "react-icons/bi";
-import { AiFillStar } from "react-icons/ai";
+import { AiFillStar, } from "react-icons/ai";
+import zoro from '../assets/zoro.svg'
 
 const MOVIE_GENRES = [
   { id: 28, name: "Action" },
@@ -36,6 +37,8 @@ const COUNTRIES = [
   { code: "FR", name: "🇫🇷 France", lang: "fr" },
   { code: "DE", name: "🇩🇪 Germany", lang: "de" },
   { code: "ES", name: "🇪🇸 Spain", lang: "es" },
+  { code: "IR", name: "IR Iran", lang: "ir" },
+   { code: "TH", name: "TH Thailand", lang: "th" },
 ];
 
 const SORT_OPTIONS = [
@@ -139,7 +142,7 @@ export default function Search() {
       }
 
     } else {
-      // Kuch nahi - popular fetch karo
+     
       const fetchFn = type === "movie" ? getByGenre : getTVByGenre;
       const res = await fetchFn(type === "movie" ? 28 : 10759);
       raw = res.data || [];
@@ -211,7 +214,10 @@ export default function Search() {
     <div className="bg-[#1D232A] min-h-screen text-white py-10">
       <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
 
-        <h1 className="text-3xl font-bold text-amber-400 mb-8">Search</h1>
+        <h1 className="text-3xl font-bold text-amber-400 mb-8 flex items-center gap-3">
+  <img src={zoro} alt="pirate" className="w-10 h-10 animate-pulse " />
+  New Saga!
+</h1>
 
         {/* Toggle */}
         <div className="tabs tabs-boxed mb-6">
@@ -247,7 +253,7 @@ export default function Search() {
         <div className="flex gap-4 w-full max-w-xl">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Oi! What are we watching today?"
             className="input input-warning w-full"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

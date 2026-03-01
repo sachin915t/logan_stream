@@ -57,7 +57,7 @@ export default function TVDetails() {
   if (detailsLoading || !detailsData) {
     return (
       <div className="bg-[#1D232A] min-h-screen text-white flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg text-warning"></span>
+        {/* <span className="loading loading-spinner loading-lg text-warning"></span> */}
       </div>
     );
   }
