@@ -30,6 +30,7 @@ export default function Top100() {
   return (
     <div className="bg-[#1D232A] min-h-screen text-white">
 
+<<<<<<< HEAD
       {/* 🎬 Hero Slider */}
       {!isLoading && movies.length > 0 && (
         <div className="w-full">
@@ -43,6 +44,9 @@ export default function Top100() {
       {/* 📦 Content */}
       <div className="max-w-7xl mx-auto px-4 mt-10 pb-10">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-8">
+=======
+        <h1 className="text-3xl sm:text-3xl md:text-4xl font-bold text-amber-300 mb-8">
+>>>>>>> 6ece0a490f6062b469f49b6e51865df76f9ba9df
           Top 100 Movies
         </h1>
 
