@@ -14,19 +14,21 @@ const navLinkStyle = `
   return (
     <>
       {/* TOP NAVBAR */}
-      <div className="relative md:sticky md:top-4 z-50 flex justify-center px-2 mt-4 md:mt-0">
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center px-4">
+
   <div className="
     w-auto
-    bg-white/5 
-    backdrop-blur-xl 
-    border border-white/10 
-    shadow-lg 
-    rounded-xl 
-    px-6 py-2 
-    flex 
-    justify-center md:justify-between 
-    items-center 
+    bg-white/10
+    backdrop-blur-2xl
+    border border-white/20
+    shadow-[0_8px_40px_rgba(0,0,0,0.35)]
+    rounded-full
+    px-8 py-3
+    flex
+    justify-center md:justify-between
+    items-center
     text-gray-200
+    transition-all duration-500
   ">
     <Link to="/" className="flex items-center gap-2">
   <img
@@ -47,8 +49,8 @@ const navLinkStyle = `
     {/* Desktop Links */}
     <div className="hidden md:flex gap-8 text-sm font-medium ml-10">
       <Link to="/" className={navLinkStyle}>Home</Link>
-      <Link to="/top100" className={navLinkStyle}>Top Movies</Link>
-            <Link to="/tv/top100" className={navLinkStyle}>Top TV</Link>
+      <Link to="/top100" className={navLinkStyle}>Movies</Link>
+            <Link to="/tv/top100" className={navLinkStyle}>TV</Link>
             <Link to="/anime" className={navLinkStyle}>Anime</Link>
             <Link to="/favorites" className={navLinkStyle}>Favorites</Link>
             

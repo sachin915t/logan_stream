@@ -81,3 +81,15 @@ export const fetchRecommendations = (id) =>
 //tv recommendations
 export const fetchTVRecommendations = (id) =>
   api.get(`/tv/${id}/recommendations`);
+
+// Movie ya TV logo fetch
+export const fetchMediaLogo = (id, type = "movie") =>
+  api.get(`/${type}/${id}/images`, {
+    meta: { skipLoading: true }
+  });
+
+export const discoverMedia = (type, params) =>
+  api.get(`/${type}/discover`, {
+    params,
+    meta: { skipLoading: true }
+  });

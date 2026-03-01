@@ -30,9 +30,9 @@ const [showPiracyWarning, setShowPiracyWarning] = useState(true);
     {
       id: "cinesrc",
       name: "Server 3",
-      movie: (id) => `https://cinesrc.st/embed/movie/${id}`,
+      movie: (id) => `https://cinesrc.st/embed/movie/${id}?seek=15&muted=true&color=%23f59e0b`,
       tv: (id, s, e) =>
-        `https://cinesrc.st/embed/tv/${id}?s=${s}&e=${e}`,
+        `https://cinesrc.st/embed/tv/${id}?s=${s}&e=${e}?seek=15&muted=true&color=%23f59e0b`,
     },
     {
       id: "AeonWatch",
@@ -47,6 +47,13 @@ const [showPiracyWarning, setShowPiracyWarning] = useState(true);
       movie: (id) => `https://111movies.net/movie/${id}`,
       tv: (id, s, e) =>
         `https://111movies.net/tv/${id}/${s}/${e}`,
+    },
+    {
+      id: "VidPlus",
+      name: "Server 6",
+      movie: (id) => `https://player.vidplus.to/embed/movie/${id}?autoplay=true&poster=true&title=true&watchparty=false&chromecast=true&servericon=true&setting=true&pip=true&hidechromecast=true&hideepisodelist=true&hideservericon=true&hidepip=true&primarycolor=FFEA00&secondarycolor=FFD500&iconcolor=FFFFFF&logourl=https%3A%2F%2Fi.ibb.co%2F67wTJd9R%2Fpngimg-com-netflix-PNG11.png&font=Roboto&fontcolor=FFFFFF&fontsize=20&opacity=0.5`,
+      tv: (id, s, e) =>
+        `https://player.vidplus.to/embed/tv/${id}/${s}/${e}?autoplay=true&autonext=true&nextbutton=true&poster=true&title=true&watchparty=false&chromecast=true&episodelist=true&servericon=true&setting=true&pip=true&hidechromecast=true&hideepisodelist=true&hideservericon=true&hidepip=true&primarycolor=FFEA00&secondarycolor=FFD500&iconcolor=FFFFFF&logourl=https%3A%2F%2Fi.ibb.co%2F67wTJd9R%2Fpngimg-com-netflix-PNG11.png&font=Roboto&fontcolor=FFFFFF&fontsize=20&opacity=0.5`,
     },
   ];
 

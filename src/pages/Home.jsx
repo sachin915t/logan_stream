@@ -9,6 +9,10 @@ import MovieCard from "../components/MovieCard";
 import { Link } from "react-router-dom";
 import GenreSection from "../components/GenreSection";
 import { useLoading } from "../context/LoadingContext";
+import HeroSlider from "../components/HeroSlider";
+import { prepareSliderData } from "../utils/prepareSliderData";
+import { fetchTVDetails, fetchMovieDetails } from "../services/api";
+import { useQuery } from "@tanstack/react-query";
 
 const movieGenres = [
   { id: 27, name: "Horror" },
@@ -25,37 +29,89 @@ const tvGenres = [
 ];
 
 export default function Home() {
-  const [latestMovies, setLatestMovies] = useState([]);
-  const [latestTV, setLatestTV] = useState([]);
+ 
   const { setLoading } = useLoading();
-  const [initialLoading, setInitialLoading] = useState(true);
 
-  useEffect(() => {
-  const fetchData = async () => {
-    try {
+// 🔥 First query
+  const {
+    data: latestData,
+    isLoading: latestLoading,
+  } = useQuery({
+    queryKey: ["home-latest"],
+    queryFn: async () => {
       const [moviesRes, tvRes] = await Promise.all([
         getLatest(),
-        getLatestTV()
+        getLatestTV(),
       ]);
 
-      setLatestMovies(moviesRes.data.slice(0, 8));
-      setLatestTV(tvRes.data.slice(0, 8));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setInitialLoading(false);
-    }
-  };
+      return {
+        movies: moviesRes.data.slice(0, 8),
+        tv: tvRes.data.slice(0, 8),
+      };
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
-  fetchData();
-  }, []);
-  
+  // 🔥 Second query
+  const {
+    data: featuredShows = [],
+    isLoading: featuredLoading,
+  } = useQuery({
+    queryKey: ["home-featured"],
+    queryFn: async () => {
+      const FEATURED_IDS = [
+        { id: 1396, type: "tv" },
+        { id: 60059, type: "tv" },
+        { id: 37854, type: "tv" },
+        { id: 1399, type: "tv" },
+      ];
+
+      return Promise.all(
+        FEATURED_IDS.map(({ id, type }) =>
+          type === "tv"
+            ? fetchTVDetails(id).then((res) => ({
+                ...res.data.details,
+                media_type: "tv",
+              }))
+            : fetchMovieDetails(id).then((res) => ({
+                ...res.data.details,
+                media_type: "movie",
+              }))
+        )
+      );
+    },
+    staleTime: 1000 * 60 * 30,
+  });
+
+  // ✅ NOW derive values
+  const latestMovies = latestData?.movies || [];
+  const latestTV = latestData?.tv || [];
+  const isLoading = latestLoading || featuredLoading;
+
+const FEATURED_IDS = [
+  { id: 1396, type: "tv" },   // Breaking Bad
+  { id: 60059, type: "tv" },  // Better Call Saul
+  { id: 37854, type: "tv" },  // One Piece
+  { id: 1399, type: "tv" },   // Game of Thrones
+];
+
+
 
   return (
     <div className="min-h-screen bg-[#1D232A] text-white">
+   {!isLoading && latestMovies.length > 0 && (
+  <HeroSlider
+  items={prepareSliderData(
+    [...featuredShows, ...prepareSliderData([...latestMovies, ...latestTV], "random").slice(0, 2)],
+    "random"
+  )}
+  type="movie"
+/>
+)}
+
   <div className="max-w-7xl mx-auto px-6 py-10">
 
-    {initialLoading ? (
+    {isLoading ? (
       <div className="flex justify-center items-center min-h-[60vh]">
       </div>
     ) : (
@@ -74,7 +130,8 @@ export default function Home() {
         <GenreSection
           title="Movie Genres"
           genres={movieGenres}
-          fetchFunction={getByGenre}
+                fetchFunction={getByGenre}
+                defaultGenre={movieGenres[0]}
         />
 
         {/* 📺 Featured TV */}
@@ -106,7 +163,9 @@ export default function Home() {
           title="TV Genres"
           genres={tvGenres}
           fetchFunction={getTVByGenre}
-          type="tv"
+                type="tv"
+                defaultGenre={tvGenres[0]}
+              
         />
       </>
     )}

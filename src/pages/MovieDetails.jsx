@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   fetchMovieDetails,
   fetchRecommendations,
+  fetchMediaLogo,
 } from "../services/api";
 import StreamingBox from "../components/StreamingBox";
 import MovieCard from "../components/MovieCard";
@@ -11,45 +12,62 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function MovieDetails() {
   const { id } = useParams();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
-  const [details, setDetails] = useState(null);
-  const [credits, setCredits] = useState(null);
-  const [recommendations, setRecommendations] = useState([]);
-  const [loadingRecs, setLoadingRecs] = useState(true);
-  
+  // 🔥 Movie Details
+  const {
+    data: detailsData,
+    isLoading: detailsLoading,
+  } = useQuery({
+    queryKey: ["movie-details", id],
+    queryFn: async () => {
+      const res = await fetchMovieDetails(id);
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  // 🔥 Recommendations
+  const {
+    data: recommendations = [],
+    isLoading: recLoading,
+  } = useQuery({
+    queryKey: ["movie-recommendations", id],
+    queryFn: async () => {
+      const res = await fetchRecommendations(id);
+      return res.data || [];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
-    fetchMovieDetails(id).then((res) => {
-      setDetails(res.data.details);
-      setCredits(res.data.credits);
-    });
+  // 🔥 Logo
+  const { data: logo } = useQuery({
+    queryKey: ["movie-logo", id],
+    queryFn: async () => {
+      const res = await fetchMediaLogo(id, "movie");
+      return res.data.logos?.[0]?.file_path || null;
+    },
+    staleTime: 1000 * 60 * 60,
+  });
 
-    setLoadingRecs(true);
-    fetchRecommendations(id).then((res) => {
-      setRecommendations(res.data || []);
-      setLoadingRecs(false);
-    });
-  }, [id]);
-
-  if (!details)
+  if (detailsLoading || !detailsData) {
     return (
       <div className="bg-[#1D232A] h-screen text-white flex items-center justify-center">
-        Loading...
+        <span className="loading loading-spinner loading-lg text-warning"></span>
       </div>
     );
-  const { toggleFavorite, isFavorite } = useFavorites();
-const favorite = isFavorite(details?.id);
+  }
 
+  const details = detailsData.details;
+  const credits = detailsData.credits;
+  const favorite = isFavorite(details?.id);
   const cast = credits?.cast?.slice(0, 8) || [];
-  const director =
-    credits?.crew?.find((person) => person.job === "Director");
+  const director = credits?.crew?.find((person) => person.job === "Director");
 
   return (
     <div className="relative w-full text-white overflow-x-hidden">
 
-      {/* Backdrop locked to viewport */}
+      {/* Backdrop */}
       {details.backdrop_path && (
         <div className="fixed inset-0 -z-20 overflow-hidden">
           <img
@@ -60,77 +78,67 @@ const favorite = isFavorite(details?.id);
         </div>
       )}
 
-      {/* Dark overlay */}
       <div className="fixed inset-0 -z-10 bg-black/70"></div>
 
-      {/* Main Content */}
       <div className="relative px-4 sm:px-6 md:px-12 py-12 max-w-7xl mx-auto">
 
         {/* Top Section */}
         <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
-
-          <div className="hover-3d">
+<div className="hover-3d">
+          <div className="relative">
             
-            
-          {/* Poster */}
-            <div className="relative group">
-  <img
-    src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
-    alt={details.name}
-    className="w-56 md:w-72 rounded-2xl shadow-2xl transition"
-              />
-              </div>
-              
-
-  {/* ❤️ Favorite Button (Same Style as MovieCard) */}
-  <button
-    onClick={() =>
-      toggleFavorite({
-        id: details.id,
-        title: details.name || details.title,
-        poster_path: details.poster_path,
-        vote_average: details.vote_average,
-        type: "tv", // or detect dynamically if needed
-      })
-    }
-    className="
-      absolute top-2 left-2 z-20
-      backdrop-blur-md
-      cursor-pointer
-      bg-black/40
-      p-2 rounded-full
-      hover:scale-110
-      active:scale-90
-      transition-all duration-300
-    "
-  >
-    <span
-      className={`
-        text-xl transition-all duration-300
-        ${
-          favorite
-            ? "text-red-500 scale-110 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
-            : "text-white"
-        }
-      `}
-    >
-      {favorite ? <FaHeart /> : <FaRegHeart />}
-    </span>
-  </button>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
+              alt={details.title}
+              className="w-56 md:w-72 rounded-2xl shadow-2xl"
+            />
 </div>
-            
+            {/* Favorite Button */}
+            <button
+              onClick={() =>
+                toggleFavorite({
+                  id: details.id,
+                  title: details.title,
+                  poster_path: details.poster_path,
+                  vote_average: details.vote_average,
+                  type: "movie",
+                })
+              }
+              className="absolute top-2 left-2 backdrop-blur-md bg-black/40 p-2 rounded-full transition"
+            >
+              <span
+                className={`text-xl ${
+                  favorite
+                    ? "text-red-500 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]"
+                    : "text-white"
+                }`}
+              >
+                {favorite ? <FaHeart /> : <FaRegHeart />}
+              </span>
+            </button>
+          </div>
 
           {/* Info */}
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-amber-400">
-              {details.title}
-            </h1>
 
-            <p className="mt-4 sm:mt-6 text-gray-300 leading-relaxed max-w-3xl text-sm sm:text-base">
+            {/* Logo or Title */}
+            {logo ? (
+              <img
+                src={`https://image.tmdb.org/t/p/w500${logo}`}
+                alt={details.title}
+                className="max-h-20 md:max-h-28 mb-4 mx-auto md:mx-0"
+              />
+            ) : (
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-amber-400 mb-4">
+                {details.title}
+              </h1>
+            )}
+
+            <p className="text-gray-300 max-w-3xl">
               {details.overview}
             </p>
 
-            <div className="mt-6 space-y-2 text-sm sm:text-base">
+            <div className="mt-6 space-y-2">
               <p>⭐ {details.vote_average?.toFixed(1)}</p>
               <p>📅 {details.release_date}</p>
               {director && (
@@ -151,12 +159,11 @@ const favorite = isFavorite(details?.id);
             <h2 className="text-xl sm:text-2xl font-semibold text-amber-400 mb-6">
               Cast
             </h2>
-
-            <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {cast.map((actor) => (
                 <div
                   key={actor.id}
-                  className="bg-base-200/40 backdrop-blur-md p-3 rounded-xl text-center text-sm"
+                  className="bg-white/10 backdrop-blur-md p-3 rounded-xl text-center"
                 >
                   {actor.name}
                 </div>
@@ -176,19 +183,12 @@ const favorite = isFavorite(details?.id);
             More Like This
           </h2>
 
-          {loadingRecs ? (
+          {recLoading ? (
             <p className="text-gray-400">Loading recommendations...</p>
           ) : recommendations.length === 0 ? (
             <p className="text-gray-400">No recommendations found.</p>
           ) : (
-            <div className="
-              grid
-              grid-cols-2
-              gap-4
-              sm:grid-cols-3
-              md:grid-cols-4
-              lg:grid-cols-5
-            ">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {recommendations.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} />
               ))}
