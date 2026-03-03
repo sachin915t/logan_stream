@@ -51,7 +51,23 @@ export default function Footer() {
     animate={{ opacity: 1 }}
     transition={{ delay: 0.5, duration: 1 }}
   >
-    Streaming across the Grand Line
+        <b>Streaming Across the Grand Line</b>
+<div></div>
+       <div className="max-w-xl w-full text-sm text-gray-400 leading-relaxed">
+  
+
+    
+ 
+          <div className="w-full max-w-3xl mx-auto px-4 sm:px-6">
+  <p className="mt-2 text-xs sm:text-sm text-gray-400 leading-relaxed">
+    <strong className="text-gray-300">Disclaimer:</strong>{" "}
+    Logan does not host or store any media files. We only provide links to third-party websites.
+    All media files are hosted by external providers. Any legal issues or copyright concerns
+    must be directed to the respective file hosts. Logan is not responsible for the content
+    provided by third-party services.
+  </p>
+</div>
+</div>
   </motion.p>
 </motion.div>
   );
