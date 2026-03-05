@@ -5,7 +5,7 @@ import {
   getByGenre,
   getTVByGenre
 } from "../services/api";
-import MovieCard from "../components/MovieCard";
+import MovieCard  from "../components/MovieCard";
 import { Link } from "react-router-dom";
 import GenreSection from "../components/GenreSection";
 import { useLoading } from "../context/LoadingContext";

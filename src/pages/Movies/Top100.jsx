@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getTop100 } from "../../services/api";
-import MovieCard from "../../components/MovieCard";
+import MovieCard, { MovieCardSkeleton } from "../../components/MovieCard";
 import HeroSlider from "../../components/HeroSlider";
 import { prepareSliderData } from "../../utils/prepareSliderData";
 
@@ -47,9 +47,11 @@ export default function Top100() {
         </h1>
 
         {isLoading && (
-          <div className="flex justify-center mt-20">
-            {/* <span className="loading loading-spinner loading-lg text-warning"></span> */}
-          </div>
+           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                      {[...Array(20)].map((_, i) => (
+                        <MovieCardSkeleton key={i} />
+                      ))}
+                    </div>
         )}
 
         {!isLoading && (
