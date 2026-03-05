@@ -26,7 +26,7 @@ function AppContent() {
   const isHome = location.pathname === "/";
 
   //  no padding
-  const noTopPadding = ["/", "/top100", "/tv/top100"].includes(location.pathname);
+  const noTopPadding = ["/", "/top100", "/tv/top100",'/anime'].includes(location.pathname);
 
   return (
     <>

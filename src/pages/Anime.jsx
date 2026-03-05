@@ -18,9 +18,6 @@ export default function TopAnime() {
     staleTime: 1000 * 60 * 15,
   });
 
-  // Use top 5 anime for hero slider instead of hardcoded IDs
-  const heroAnime = anime.slice(0, 5);
-
   if (isError) {
     return (
       <div className="bg-[#1D232A] min-h-screen text-white flex items-center justify-center">
@@ -30,18 +27,19 @@ export default function TopAnime() {
   }
 
   return (
-    <div className="bg-[#1D232A] min-h-screen text-white">
-      {/* Show hero only when loaded and has data */}
-      {!isLoading && heroAnime.length > 0 && (
-        <div className="w-full">
-          <HeroSlider 
-            items={prepareSliderData(heroAnime)} 
-            type="tv" 
-          />
-        </div>
-      )}
+    <div className="min-h-screen bg-[#1D232A] text-white">
+      {/* ✅ FULL BLEED: No wrapper, no padding, edge-to-edge like Home */}
+      {!isLoading && anime.length > 0 && (
+  <div className="relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
+    <HeroSlider 
+      items={prepareSliderData(anime.slice(0, 6), "random")} 
+      type="tv" 
+    />
+  </div>
+)}
 
-      <div className="max-w-7xl mx-auto px-4 mt-10 pb-10">
+      {/* Content starts below with padding */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <h1 className="text-3xl font-bold text-amber-300 mb-8">
           Top Anime
         </h1>
@@ -49,8 +47,8 @@ export default function TopAnime() {
         {isLoading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {[...Array(20)].map((_, i) => (
-      <MovieCardSkeleton key={i} />
-    ))}
+              <MovieCardSkeleton key={i} />
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
