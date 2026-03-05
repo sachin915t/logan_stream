@@ -4,10 +4,10 @@ import {
   fetchMovieDetails,
   fetchRecommendations,
   fetchMediaLogo,
-} from "../services/api";
-import StreamingBox from "../components/StreamingBox";
-import MovieCard from "../components/MovieCard";
-import { useFavorites } from "../context/FavoritesContext";
+} from "../../services/api";
+import StreamingBox from "../../components/StreamingBox";
+import MovieCard from "../../components/MovieCard";
+import { useFavorites } from "../../context/FavoritesContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function MovieDetails() {
