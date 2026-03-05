@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTop100 } from "../services/api";
-import MovieCard from "../components/MovieCard";
-import HeroSlider from "../components/HeroSlider";
-import { prepareSliderData } from "../utils/prepareSliderData";
+import { getTop100 } from "../../services/api";
+import MovieCard from "../../components/MovieCard";
+import HeroSlider from "../../components/HeroSlider";
+import { prepareSliderData } from "../../utils/prepareSliderData";
 
 export default function Top100() {
 

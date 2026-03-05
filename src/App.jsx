@@ -2,14 +2,14 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Top100 from "./pages/Top100";
+import Top100 from "./pages/Movies/Top100";
 import Search from "./pages/Search";
-import MovieDetails from "./pages/MovieDetails";
-import TVDetails from "./pages/TVDetails";
+import MovieDetails from "./pages/Movies/MovieDetails";
+import TVDetails from "./pages/Tv/TVDetails";
 import GlobalLoader from "./components/GlobalLoader";
 import { useLoading } from "./context/LoadingContext";
 import { attachLoadingSetter } from "./services/api";
-import TopTV from "./pages/TopTV";
+import TopTV from "./pages/Tv/TopTV";
 import Favorites from "./pages/Favorites";
 import Anime from "./pages/Anime";
 import zoroIcon from "./assets/zoro.svg";
@@ -50,10 +50,10 @@ function AppContent() {
       <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/top100" element={<Top100 />} />
-          <Route path="/tv/top100" element={<TopTV />} />
+              <Route path="/tv/top100" element={<TopTV />} />
+              <Route path="/anime" element={<Anime />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/anime" element={<Anime />} />
           <Route path="/movie/:id" element={<MovieDetails />} />
           <Route path="/tv/:id" element={<TVDetails />} />
              </Routes>

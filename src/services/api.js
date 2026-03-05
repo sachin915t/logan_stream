@@ -88,6 +88,14 @@ export const fetchMediaLogo = (id, type = "movie") =>
     meta: { skipLoading: true }
   });
 
+// anime section
+
+export const getTopAnime = () =>
+  api.get("/top-anime");
+
+export const fetchAnimeDetails = (id) =>
+  api.get(`/tv/${id}`);
+
 export const discoverMedia = (type, params) =>
   api.get(`/${type}/discover`, {
     params,

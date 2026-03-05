@@ -1,32 +1,65 @@
-import zoroIcon from "../assets/zoro.svg";
+import { useQuery } from "@tanstack/react-query";
+import { getTopAnime } from "../services/api";
+import MovieCard, { MovieCardSkeleton } from "../components/MovieCard";
+import HeroSlider from "../components/HeroSlider";
+import { prepareSliderData } from "../utils/prepareSliderData";
 
-export default function Anime() {
+export default function TopAnime() {
+  const {
+    data: anime = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["top-anime"],
+    queryFn: async () => {
+      const res = await getTopAnime();
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 15,
+  });
 
-    
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 text-gray-200">
+  // Use top 5 anime for hero slider instead of hardcoded IDs
+  const heroAnime = anime.slice(0, 5);
 
-      <div className="text-6xl mb-4 animate-pulse">
-        <img
-  src={zoroIcon}
-  alt="zoro"
-  className="w-24 h-24 mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
-/>
+  if (isError) {
+    return (
+      <div className="bg-[#1D232A] min-h-screen text-white flex items-center justify-center">
+        <p className="text-red-500">Failed to load Top Anime.</p>
       </div>
+    );
+  }
 
-      <h1 className="text-3xl md:text-4xl font-bold text-amber-400 tracking-wide">
-        ANIME
-      </h1>
+  return (
+    <div className="bg-[#1D232A] min-h-screen text-white">
+      {/* Show hero only when loaded and has data */}
+      {!isLoading && heroAnime.length > 0 && (
+        <div className="w-full">
+          <HeroSlider 
+            items={prepareSliderData(heroAnime)} 
+            type="tv" 
+          />
+        </div>
+      )}
 
-      <p className="mt-2 text-gray-400 tracking-widest text-sm">
-        COMING SOON
-      </p>
+      <div className="max-w-7xl mx-auto px-4 mt-10 pb-10">
+        <h1 className="text-3xl font-bold text-amber-300 mb-8">
+          Top Anime
+        </h1>
 
-      <p className="mt-6 max-w-md text-gray-500 text-sm">
-        A new world of freedom, battles, and legends is under preparation.
-        Stay tuned.
-      </p>
-
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {[...Array(20)].map((_, i) => (
+      <MovieCardSkeleton key={i} />
+    ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {anime.map((show) => (
+              <MovieCard key={show.id} movie={show} type="tv" />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
