@@ -91,7 +91,7 @@ export default function MovieCard({ movie, type, variant = "normal" }) {
           </div>
 
           {/* Title Section */}
-          <div className="p-3">
+          {/* <div className="p-3">
             <h2
               className={`
                 font-semibold line-clamp-2 leading-snug
@@ -102,7 +102,7 @@ export default function MovieCard({ movie, type, variant = "normal" }) {
             >
               {movie.title || movie.name}
             </h2>
-          </div>
+          </div> */}
         </div>
       </div>
     </Link>

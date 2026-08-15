@@ -71,7 +71,7 @@ export default function TVDetails() {
   const totalEpisodes = currentSeason?.episode_count || 1;
 
   return (
-    <div className="relative min-h-screen w-screen text-white overflow-x-hidden">
+   <div className="relative min-h-screen w-full text-white overflow-x-hidden">
 
       {/* Backdrop */}
       {details.backdrop_path && (
@@ -79,11 +79,13 @@ export default function TVDetails() {
           <img
             src={`https://image.tmdb.org/t/p/original${details.backdrop_path}`}
             alt="Backdrop"
-            className="w-full h-full object-cover blur-sm scale-110 brightness-50"
+            className="w-full h-full object-cover blur-sm scale-110 brightness-30"
           />
         </div>
       )}
 
+      
+      
       <div className="fixed inset-0 -z-10 bg-black/70"></div>
 
       <div className="relative px-6 md:px-12 py-20 max-w-7xl mx-auto">
@@ -168,48 +170,162 @@ export default function TVDetails() {
         )}
 
         {/* SEASON & EPISODE SELECTOR */}
-        <div className="mt-12 flex flex-wrap gap-6 items-end">
+      <div className="mt-10 flex flex-wrap items-center gap-4">
 
-          <div className="flex flex-col gap-1">
-            <label className="text-amber-400 font-semibold text-sm">Season</label>
-            <select
-              className="px-4 py-2 rounded-xl bg-white/10 border border-amber-400/30 text-white w-48"
-              value={season}
-              onChange={(e) => {
-                setSeason(Number(e.target.value));
+  {/* Season */}
+  <div className="dropdown">
+    <button
+      tabIndex={0}
+      className="flex min-w-44 items-center justify-between
+                 rounded-2xl border border-white/10
+                 bg-white/[0.06] px-4 py-3
+                 text-left backdrop-blur-xl
+                 transition-all duration-300
+                 hover:border-amber-400/30
+                 hover:bg-white/[0.09]
+                 active:scale-[0.98]"
+    >
+      <div>
+        <p className="text-[10px] uppercase tracking-widest text-white/40">
+          Season
+        </p>
+        <p className="mt-0.5 text-sm font-semibold text-white">
+          Season {season}
+        </p>
+      </div>
+
+      <span className="ml-4 text-white/40">
+        ▾
+      </span>
+    </button>
+
+    <ul
+      tabIndex={0}
+      className="dropdown-content z-50 mt-2 max-h-72 w-52
+                 overflow-y-auto rounded-2xl
+                 border border-white/10
+                 bg-[#151a21]/95
+                 p-2 shadow-2xl
+                 backdrop-blur-xl"
+    >
+      {seasonsData
+        .filter((s) => s.season_number !== 0)
+        .map((s) => (
+          <li key={s.id}>
+            <button
+              onClick={() => {
+                setSeason(s.season_number);
                 setEpisode(1);
               }}
+              className={`w-full rounded-xl px-4 py-2.5
+                          text-left text-sm
+                          transition-all duration-200
+                          ${
+                            season === s.season_number
+                              ? "bg-amber-400/15 text-amber-400"
+                              : "text-white/70 hover:bg-white/10 hover:text-white"
+                          }`}
             >
-              {seasonsData
-                .filter((s) => s.season_number !== 0)
-                .map((s) => (
-                  <option key={s.id} value={s.season_number} className="bg-[#1D232A]">
-                    Season {s.season_number}
-                  </option>
-                ))}
-            </select>
-          </div>
+              Season {s.season_number}
+            </button>
+          </li>
+        ))}
+    </ul>
+  </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-amber-400 font-semibold text-sm">Episode</label>
-            <select
-              className="px-4 py-2 rounded-xl bg-white/10 border border-amber-400/30 text-white w-48"
-              value={episode}
-              onChange={(e) => setEpisode(Number(e.target.value))}
+
+  {/* Episode */}
+  <div className="dropdown">
+    <button
+      tabIndex={0}
+      className="flex min-w-44 items-center justify-between
+                 rounded-2xl border border-white/10
+                 bg-white/[0.06] px-4 py-3
+                 text-left backdrop-blur-xl
+                 transition-all duration-300
+                 hover:border-amber-400/30
+                 hover:bg-white/[0.09]
+                 active:scale-[0.98]"
+    >
+      <div>
+        <p className="text-[10px] uppercase tracking-widest text-white/40">
+          Episode
+        </p>
+        <p className="mt-0.5 text-sm font-semibold text-white">
+          Episode {episode}
+        </p>
+      </div>
+
+      <span className="ml-4 text-white/40">
+        ▾
+      </span>
+    </button>
+
+    <ul
+      tabIndex={0}
+      className="dropdown-content z-50 mt-2 max-h-72 w-52
+                 overflow-y-auto rounded-2xl
+                 border border-white/10
+                 bg-[#151a21]/95
+                 p-2 shadow-2xl
+                 backdrop-blur-xl"
+    >
+      {Array.from({ length: totalEpisodes }, (_, i) => {
+        const ep = i + 1;
+
+        return (
+          <li key={ep}>
+            <button
+              onClick={() => setEpisode(ep)}
+              className={`w-full rounded-xl px-4 py-2.5
+                          text-left text-sm
+                          transition-all duration-200
+                          ${
+                            episode === ep
+                              ? "bg-amber-400/15 text-amber-400"
+                              : "text-white/70 hover:bg-white/10 hover:text-white"
+                          }`}
             >
-              {Array.from({ length: totalEpisodes }, (_, i) => (
-                <option key={i + 1} value={i + 1} className="bg-[#1D232A]">
-                  Episode {i + 1}
-                </option>
-              ))}
-            </select>
-          </div>
+              Episode {ep}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
 
-          <div className="px-4 h-10 flex items-center rounded-full border border-amber-400/50 text-amber-400 text-sm">
-            S{season} • E{episode} • {totalEpisodes} Episodes
-          </div>
-        </div>
 
+  {/* Status */}
+  <div
+    className="rounded-full border border-amber-400/20
+               bg-amber-400/[0.08]
+               px-4 py-2.5
+               text-sm backdrop-blur-xl"
+  >
+    <span className="font-bold text-amber-400">
+      S{season}
+    </span>
+
+    <span className="mx-2 text-white/20">
+      •
+    </span>
+
+    <span className="font-semibold text-white">
+      E{episode}
+    </span>
+
+    <span className="mx-2 text-white/20">
+      •
+    </span>
+
+    <span className="text-white/50">
+      {totalEpisodes} eps
+    </span>
+  </div>
+
+</div>
+
+        
         {/* STREAMING */}
         <div className="mt-20">
           <StreamingBox
